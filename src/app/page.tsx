@@ -22,7 +22,7 @@ import {
   Title,
 } from "@mantine/core";
 
-import { Form, useForm, zodResolver } from "@mantine/form";
+import { useForm, zodResolver } from "@mantine/form";
 import { z } from "zod";
 
 const schema = z
@@ -35,21 +35,21 @@ const schema = z
       .min(3, { message: "Last name must have at least 3 characters" }),
     email: z.string().email({ message: "Invalid email format" }),
     plan: z.enum(["funrun", "mini", "half", "full"], {
-      errorMap: (issue, ctx) => ({ message: "Please select a plan" }),
+      errorMap: () => ({ message: "Please select a plan" }),
     }),
     gender: z.enum(["male", "female"], {
-      errorMap: (issue, ctx) => ({ message: "Please choose a gender" }),
+      errorMap: () => ({ message: "Please choose a gender" }),
     }),
     acceptTermsAndConds: z.literal(true, {
       // message: "You must accept terms and conditions",
-      errorMap: (issue, ctx) => ({
+      errorMap: () => ({
         message: "You must accept terms and conditions",
       }),
     }),
     hasCoupon: z.boolean(),
     coupon: z.string(),
-    password: z.string(),
-    confirmPassword: z.string(),
+    password: z.string().min(6).max(12, { message: "Password must not exceed 12 characters" }),
+    confirmPassword: z.string().min(6).max(12, { message: "Password must not exceed 12 characters" }),
   })
   .refine( //เป็นการเช็ค pass ว่าถูกไหม
     //refine allows you check error in your own way
@@ -69,7 +69,17 @@ const schema = z
       message: "Invalid coupon code",
       path: ["coupon"],
     }
-  );
+  )
+  .refine((data) => {
+    if (data.password === data.confirmPassword) {
+      return true;
+    }
+    return false;
+  },
+  {
+    message: "Password does not match",
+    path: ["confirmPassword"]
+  });
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -96,10 +106,16 @@ export default function Home() {
     //TIP : get value of currently filled form with variable "form.values"
 
     if (form.values.plan === "funrun") price = 500;
+    if (form.values.plan === "mini") price = 800;
+    if (form.values.plan === "half") price = 1200;
+    if (form.values.plan === "full") price = 1500;
     //check the rest plans by yourself
     //TIP : check /src/app/libs/runningPlans.js
 
     //check discount here
+    if(form.values.hasCoupon && form.values.coupon === "CMU2023"){
+      price = price - (price * 0.3); //30% discount
+    }
 
     return price;
   };
