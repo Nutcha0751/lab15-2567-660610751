@@ -130,7 +130,7 @@ export default function Home() {
         <Space h="lg" />
 
         {/* add form */}
-        <form onSubmit={form.onSubmit((values) => alert("See you at CMU Marathon 2024"))}>
+        <form onSubmit={form.onSubmit(() => alert("See you at CMU Marathon 2024"))}>
           <Stack gap="sm">
             <Group grow align="start">
               <TextInput
