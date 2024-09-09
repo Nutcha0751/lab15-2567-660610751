@@ -51,7 +51,7 @@ const schema = z
     password: z.string(),
     confirmPassword: z.string(),
   })
-  .refine(
+  .refine( //เป็นการเช็ค pass ว่าถูกไหม
     //refine allows you check error in your own way
     //in this example, we check "hasCoupon" with "coupon" fields
     (data) => {
@@ -114,7 +114,7 @@ export default function Home() {
         <Space h="lg" />
 
         {/* add form */}
-        <form onSubmit={form.onSubmit((v) => alert("See you at CMU Marathon"))}>
+        <form onSubmit={form.onSubmit((values) => alert("See you at CMU Marathon 2024"))}>
           <Stack gap="sm">
             <Group grow align="start">
               <TextInput
@@ -187,7 +187,7 @@ export default function Home() {
           </Stack>
         </form>
 
-        {/* <Footer year={2023} fullName="Chayanin Suatap" studentId="650610560" /> */}
+        <Footer year={2024} fullName="Nutcha Khampoung" studentId="660610751" />
       </Container>
 
       <TermsAndCondsModal opened={opened} close={close} />
